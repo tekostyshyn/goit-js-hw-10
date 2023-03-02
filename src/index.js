@@ -1,11 +1,12 @@
 import './css/styles.css';
 import { fetchCountries } from './js/fetchCountries';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const debounce = require('lodash.debounce');
 const DEBOUNCE_DELAY = 300;
 const WARNING_MESSAGE =
   'Too many matches found. Please enter a more specific name.';
-
+const ERROR = 'Oops, there is no country with that name';
 const refs = {
   input: document.querySelector('input#search-box'),
   countriesList: document.querySelector('.country-list'),
@@ -20,16 +21,24 @@ refs.input.addEventListener(
 function onTextFieldInput() {
   const trimmedInputValue = refs.input.value.trim();
   if (trimmedInputValue) {
-    fetchCountries(trimmedInputValue).then(checkFetchedData);
+    fetchCountries(trimmedInputValue)
+      .then(checkFetchedData)
+      .catch(() => {
+        Notify.failure(ERROR, { fontSize: '20px', width: '400px' });
+      });
   }
 }
 
 function checkFetchedData(countries) {
   if (countries.length > 10) {
-    console.log(WARNING_MESSAGE);
+    Notify.info(WARNING_MESSAGE, { fontSize: '20px', width: '400px' });
+    clearBoxMarkup();
+    clearListMarkup();
   } else if (countries.length >= 2 && countries.length <= 10) {
+    clearBoxMarkup();
     createListMarkup(countries);
   } else if (countries.length === 1) {
+    clearListMarkup();
     createBoxMarkup(countries);
   }
 }
@@ -46,7 +55,6 @@ function createListMarkup(countries) {
 }
 
 function createBoxMarkup(countries) {
-
   refs.countryBox.innerHTML = countries
     .map(country => {
       const countryLanguage = Object.values(country.languages).join(', ');
@@ -60,4 +68,12 @@ function createBoxMarkup(countries) {
       <p class='country-info__content'><b>Languages:</b> ${countryLanguage}</p>`;
     })
     .join('');
+}
+
+function clearListMarkup() {
+  refs.countriesList.innerHTML = '';
+}
+
+function clearBoxMarkup() {
+  refs.countryBox.innerHTML = '';
 }

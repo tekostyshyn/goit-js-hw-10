@@ -29,6 +29,10 @@ p {
   margin-bottom: 16px;
 }
 
+.country-list {
+  padding-left: 0;
+}
+
 .country-list__flag {
   width: 50px;
 }
@@ -66,4 +70,9 @@ p {
 .country-info__content {
   font-size: 24px;
   margin-bottom: 10px;
+}
+
+#search-box {
+  font-size: 24px;
+  width: 300px;
 }
