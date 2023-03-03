@@ -25,6 +25,8 @@ function onTextFieldInput() {
       .then(checkFetchedData)
       .catch(() => {
         Notify.failure(ERROR, { fontSize: '20px', width: '400px' });
+        clearBoxMarkup();
+        clearListMarkup();
       });
   }
 }
